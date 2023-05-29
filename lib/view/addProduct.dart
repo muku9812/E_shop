@@ -13,6 +13,8 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   File? _image;
   Future _pickImageFromGallery() async {
@@ -43,6 +45,8 @@ class _AddProductState extends State<AddProduct> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                controller: _titleController,
+                keyboardType: TextInputType.name,
                 decoration: InputDecoration(
                     hintText: 'Title',
                     border: OutlineInputBorder(
@@ -52,6 +56,8 @@ class _AddProductState extends State<AddProduct> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                controller: _descriptionController,
+                keyboardType: TextInputType.text,
                 minLines: 3,
                 maxLines: 6,
                 decoration: InputDecoration(

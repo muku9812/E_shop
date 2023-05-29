@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:practise/utilities/routes/routesName.dart';
 import 'package:practise/utilities/utilities.dart';
@@ -28,6 +29,7 @@ class _HomeViewState extends State<HomeView> {
     'sweater'
   ];
   int items = 1;
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -75,11 +77,11 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
           Padding(
-              padding: EdgeInsets.only(right: 16, left: 8),
+              padding: const EdgeInsets.only(right: 16, left: 8),
               child: Center(
                 child: badges.Badge(
                   badgeContent: Text(items.toString()),
-                  child: Icon(
+                  child: const Icon(
                     Icons.shopping_cart_outlined,
                     size: 30,
                   ),
@@ -91,15 +93,15 @@ class _HomeViewState extends State<HomeView> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const UserAccountsDrawerHeader(
-              decoration: BoxDecoration(
+            UserAccountsDrawerHeader(
+              decoration: const BoxDecoration(
                   color: Color.fromARGB(255, 154, 226, 45),
                   borderRadius: BorderRadius.only(
                       bottomRight: Radius.circular(10),
                       bottomLeft: Radius.circular(10))),
-              accountName: Text('Mukesh Mandal'),
-              accountEmail: Text('Mukeshm98149@gmail.com'),
-              currentAccountPicture: CircleAvatar(
+              accountName: const Text('Mukesh Mandal'),
+              accountEmail: Text(auth.currentUser!.email.toString()),
+              currentAccountPicture: const CircleAvatar(
                   backgroundImage: NetworkImage(
                       'https://marketplace.canva.com/EAFEits4-uw/1/0/1600w/canva-boy-cartoon-gamer-animated-twitch-profile-photo-oEqs2yqaL8s.jpg')),
             ),
@@ -117,6 +119,20 @@ class _HomeViewState extends State<HomeView> {
             const ListTile(
               leading: Icon(Icons.settings),
               title: Text('Settings.'),
+            ),
+            ListTile(
+              onTap: () {
+                auth.signOut().then((value) {
+                  Navigator.restorablePushNamedAndRemoveUntil(
+                      context, RoutesName.login, (route) => false);
+                }).then((value) {
+                  Utils.snackBar("Logout successfully.", context);
+                }).onError((error, stackTrace) {
+                  Utils.flushBarErrorMessage(error.toString(), context);
+                });
+              },
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout.'),
             ),
           ],
         ),
