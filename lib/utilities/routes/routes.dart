@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:practise/services/splashServices.dart';
 import 'package:practise/utilities/routes/routesName.dart';
+import 'package:practise/view/addProduct.dart';
 import 'package:practise/view/contactUs.dart';
 import 'package:practise/view/homeView.dart';
 import 'package:practise/view/registerView.dart';
@@ -14,6 +15,9 @@ class Routes {
       case RoutesName.splash:
         return MaterialPageRoute(
             builder: (BuildContext context) => const SplashScreen());
+      case RoutesName.addProduct:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const AddProduct());
       case RoutesName.home:
         return MaterialPageRoute(
             builder: (BuildContext context) => const HomeView());

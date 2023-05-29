@@ -121,6 +121,12 @@ class _HomeViewState extends State<HomeView> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, RoutesName.addProduct);
+        },
+        child: const Icon(Icons.add),
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
