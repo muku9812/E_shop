@@ -15,20 +15,21 @@ class FavoriteProduct extends StatefulWidget {
 
 class _FavoriteProductState extends State<FavoriteProduct> {
   late FavoriteProductProvider favoriteProductProvider;
-  List<FavouriteModel> favourtes = [];
+  List<FavouriteModel> favourites = [];
   StreamSubscription? modelSub;
-
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      modelSub =
-          favoriteProductProvider.fetchFavourite((List<FavouriteModel> forms) {
-        favourtes = forms;
-        setState(() {});
+    super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      final favoriteProductProvider =
+          Provider.of<FavoriteProductProvider>(context, listen: false);
+      favoriteProductProvider.fetchFavourite((forms) {
+        setState(() {
+          favourites = forms;
+        });
       });
     });
-
-    super.initState();
   }
 
   @override
@@ -62,12 +63,12 @@ class _FavoriteProductState extends State<FavoriteProduct> {
                       width: 70,
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: NetworkImage(favourtes[index].imageUrl)),
+                              image: NetworkImage(favourites[index].imageUrl)),
                           borderRadius: BorderRadius.circular(10)),
                     ),
-                    title: Text(favourtes[index].title),
+                    title: Text(favourites[index].title),
                     subtitle: Text(
-                      favourtes[index].description,
+                      favourites[index].description,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
@@ -85,7 +86,7 @@ class _FavoriteProductState extends State<FavoriteProduct> {
                                   ))
                             ])),
               );
-            }, childCount: favourtes.length)),
+            }, childCount: favourites.length)),
           )
         ],
       ),

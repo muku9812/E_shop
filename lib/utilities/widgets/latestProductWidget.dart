@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:practise/controller/favoriteProductProvider.dart';
 import 'package:practise/model/productModel.dart';
+import 'package:practise/utilities/routes/routesName.dart';
 import 'package:practise/utilities/utilities.dart';
 import 'package:provider/provider.dart';
 
@@ -55,6 +56,7 @@ class LatestProduct extends StatelessWidget {
                                               favoriteProductProvider, child) {
                                             return GestureDetector(
                                               onTap: () {
+                                                // Navigator.pop(context);
                                                 favoriteProductProvider
                                                     .addFavourite(
                                                         latestProductList[i].id,
@@ -67,7 +69,9 @@ class LatestProduct extends StatelessWidget {
                                                     .then((value) {
                                                   Utils.toastMessage(
                                                       '${latestProductList[i].title} added to favourite');
-                                                  Navigator.pop(context);
+
+                                                  Navigator.pushNamed(context,
+                                                      RoutesName.favorite);
                                                 });
                                               },
                                               child: const Icon(

@@ -4,6 +4,12 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:practise/model/favouriteModel.dart';
 
 class FavoriteProductProvider with ChangeNotifier {
+  int _count = 0;
+  int get count => _count;
+  void set count(value) {
+    _count = value;
+  }
+
   final fireStore = FirebaseFirestore.instance.collection('favourite_list');
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
@@ -20,13 +26,16 @@ class FavoriteProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  fetchFavourite(Function cb) {
-    FirebaseFirestore.instance.collection('favourite_list').snapshots().listen(
-      (event) {
-        cb(event.docs.map((e) => FavouriteModel.fromJson(e.data())).toList());
-      },
-    );
-
-    notifyListeners();
+  void fetchFavourite(Function(List<FavouriteModel>) cb) {
+    FirebaseFirestore.instance
+        .collection('favourite_list')
+        .snapshots()
+        .listen((event) {
+      List<FavouriteModel> fetchedFavourites =
+          event.docs.map((doc) => FavouriteModel.fromJson(doc.data())).toList();
+      cb(fetchedFavourites);
+      count = fetchedFavourites.length;
+      notifyListeners();
+    });
   }
 }

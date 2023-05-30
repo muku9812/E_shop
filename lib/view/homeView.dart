@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:practise/controller/favoriteProductProvider.dart';
 import 'package:practise/controller/productProvider.dart';
 import 'package:practise/model/productModel.dart';
 import 'package:practise/utilities/routes/routesName.dart';
 import 'package:practise/utilities/utilities.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:provider/provider.dart';
 
 import '../utilities/widgets/latestProductWidget.dart';
 import '../utilities/widgets/summerCollectionCard.dart';
@@ -69,18 +71,20 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: badges.Badge(
-                badgeContent: Text('3'),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, RoutesName.favorite);
-                  },
-                  child: const Icon(
-                    Icons.favorite_outline,
-                    size: 30,
+          Consumer<FavoriteProductProvider>(
+            builder: (context, favoriteProductProvider, child) => Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: badges.Badge(
+                  badgeContent: Text(favoriteProductProvider.count.toString()),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, RoutesName.favorite);
+                    },
+                    child: const Icon(
+                      Icons.favorite_outline,
+                      size: 30,
+                    ),
                   ),
                 ),
               ),
@@ -218,7 +222,7 @@ class _HomeViewState extends State<HomeView> {
                         images: images,
                         width: width);
                   } else {
-                    return const Center(
+                    return Center(
                       child: CircularProgressIndicator(),
                     );
                   }
