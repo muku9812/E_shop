@@ -33,6 +33,10 @@ class _AddProductState extends State<AddProduct> {
     });
   }
 
+  int _selectedValue = 1;
+  bool latestProductOptionSelected = false;
+  bool summerCollectionOptionSelected = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +49,28 @@ class _AddProductState extends State<AddProduct> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            RadioListTile(
+              title: Text('Add to summer collection'),
+              value: 1,
+              groupValue: _selectedValue,
+              onChanged: (value) {
+                setState(() {
+                  _selectedValue = value!;
+                  summerCollectionOptionSelected = true;
+                });
+              },
+            ),
+            RadioListTile(
+              title: Text('Add to Latest product collection'),
+              value: 2,
+              groupValue: _selectedValue,
+              onChanged: (value) {
+                setState(() {
+                  _selectedValue = value!;
+                  latestProductOptionSelected = true;
+                });
+              },
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
@@ -102,20 +128,39 @@ class _AddProductState extends State<AddProduct> {
                         Utils.flushBarErrorMessage(
                             'Please select image.', context);
                       } else {
-                        productProvider
-                            .addProduct(
-                          _titleController.text,
-                          _descriptionController.text,
-                          _image!,
-                        )
-                            .then((value) {
-                          Utils.toastMessage(
-                              '${_titleController.text} added successfully');
-                          Navigator.pushReplacementNamed(
-                              context, RoutesName.home);
-                        }).onError((error, stackTrace) {
-                          Utils.flushBarErrorMessage(error.toString(), context);
-                        });
+                        if (latestProductOptionSelected) {
+                          productProvider
+                              .addProduct(
+                            _titleController.text,
+                            _descriptionController.text,
+                            _image!,
+                          )
+                              .then((value) {
+                            Utils.toastMessage(
+                                '${_titleController.text} added successfully to latest product collection');
+                            Navigator.pushReplacementNamed(
+                                context, RoutesName.home);
+                          }).onError((error, stackTrace) {
+                            Utils.flushBarErrorMessage(
+                                error.toString(), context);
+                          });
+                        } else if (summerCollectionOptionSelected) {
+                          productProvider
+                              .addToSummerCollection(
+                            _titleController.text,
+                            _descriptionController.text,
+                            _image!,
+                          )
+                              .then((value) {
+                            Utils.toastMessage(
+                                '${_titleController.text} added successfully to summer collection ');
+                            Navigator.pushReplacementNamed(
+                                context, RoutesName.home);
+                          }).onError((error, stackTrace) {
+                            Utils.flushBarErrorMessage(
+                                error.toString(), context);
+                          });
+                        }
                       }
                     },
                     child: Container(

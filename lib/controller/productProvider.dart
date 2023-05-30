@@ -18,6 +18,8 @@ class ProductProvider with ChangeNotifier {
   List<ProductModel> latestProductList = [];
 
   final fireStore = FirebaseFirestore.instance.collection('products');
+  final summerCollectionFirestore =
+      FirebaseFirestore.instance.collection('summerCollection');
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -53,6 +55,46 @@ class ProductProvider with ChangeNotifier {
           .orderBy(
             FieldPath.documentId,
           )
+          .limit(10)
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => ProductModel.fromJson(doc.data()))
+              .toList());
+
+  Future<void> addToSummerCollection(
+      String title, String description, File image) async {
+    loading = true;
+    String? imageUrl;
+    String id = DateTime.now().microsecondsSinceEpoch.toString();
+    firebase_storage.Reference productRef = firebase_storage
+        .FirebaseStorage.instance
+        .ref('summerProduct/$title$id');
+    if (image != null) {
+      firebase_storage.TaskSnapshot uploadTask =
+          await productRef.putFile(image);
+      imageUrl = await uploadTask.ref.getDownloadURL();
+      ProductModel productModel = ProductModel(
+        id: id,
+        title: title,
+        description: description,
+        image: imageUrl,
+        uid: auth.currentUser!.uid,
+      );
+      await summerCollectionFirestore
+          .doc(id)
+          .set(productModel.toJson())
+          .then((value) {
+        loading = false;
+      });
+      loading = false;
+      notifyListeners();
+    }
+  }
+
+  static Stream<List<ProductModel>> getSummerProducts() =>
+      FirebaseFirestore.instance
+          .collection('summerCollection')
+          .orderBy(FieldPath.documentId)
           .limit(10)
           .snapshots()
           .map((snapshot) => snapshot.docs

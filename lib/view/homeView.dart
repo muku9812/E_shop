@@ -19,22 +19,6 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  List<String> images = [
-    'https://filson-canto.imgix.net/sfi96vqojp2kf0cc843vdqhh0s/473jyYlXduHPdRoGSzAvpZdHeLQ/original?h=800&w=800&bg=0FFF&q=80&auto=format,compress&fit=fillmax',
-    'https://www.backcountry.com/images/items/large/FSN/FSN0058/BK.jpg',
-    'https://www.backcountry.com/images/items/large/FSN/FSN0058/BK.jpg',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi33kxa6WQ3g94bxPrIs_oCRWQ-fCpdPejIkRFc-iryQ8JzHkhPoW-__gOGkMwcfdVALc&usqp=CAU',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_bx6K-948sY3zl0Wa8BupQw5u8huj4ZTz082MGaNKXQVDwEqeH-BjpFJCAJmlzox3xzo&usqp=CAU',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEktpWHqEk1HaxWg5P1Xr00hCjF_TF7vi38df01n9GfY_fnosqFI4sDVl_7UymcyEjZYs&usqp=CAU'
-  ];
-  List<String> name = [
-    'Jacket',
-    'T-shirt',
-    'pant',
-    'Jockers',
-    'vest',
-    'sweater'
-  ];
   int items = 1;
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -250,26 +234,49 @@ class _HomeViewState extends State<HomeView> {
             ),
             SizedBox(
               height: height * 0.82,
-              child: GridView(
-                physics: const NeverScrollableScrollPhysics(),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 8.0,
-                  crossAxisSpacing: 8.0,
-                  childAspectRatio: 0.8,
-                ),
-                children: <Widget>[
-                  for (int i = 0; i <= 5; i++)
-                    ReusableCard(
-                        images: images,
-                        i: i,
-                        height: height,
-                        width: width,
-                        name: name),
-                ],
-              ),
+              child: StreamBuilder<List<ProductModel>>(
+                  stream: ProductProvider.getSummerProducts(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return const Center(
+                        child: Text('Something went wrong'),
+                      );
+                    } else if (snapshot.hasData) {
+                      final summerProductList = snapshot.data!;
+                      List<String> names = [];
+                      List<String> images = [];
+                      for (int i = 0; i < summerProductList.length; i++) {
+                        names.add(summerProductList[i].title);
+                        images.add(summerProductList[i].image);
+                      }
+                      for (int i = 0; i < summerProductList.length; i++) {
+                        return GridView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 8.0,
+                            crossAxisSpacing: 8.0,
+                            childAspectRatio: 0.8,
+                          ),
+                          children: <Widget>[
+                            for (int i = 0; i < summerProductList.length; i++)
+                              ReusableCard(
+                                  images: images,
+                                  i: i,
+                                  height: height,
+                                  width: width,
+                                  name: names),
+                          ],
+                        );
+                      }
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }),
             )
           ],
         ),
