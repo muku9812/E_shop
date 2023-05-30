@@ -235,7 +235,7 @@ class _HomeViewState extends State<HomeView> {
                                                             text:
                                                                 'In literary theory, a text is any object that can be "read", whether this object is a work of literature, a street sign, an arrangement of buildings on a city block, or styles of clothing.',
                                                             style: TextStyle(
-                                                              fontSize: 12,
+                                                              fontSize: 8,
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
@@ -305,7 +305,7 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
             SizedBox(
-              height: height,
+              height: height * 0.82,
               child: GridView(
                 physics: const NeverScrollableScrollPhysics(),
                 padding:
@@ -359,7 +359,7 @@ class ReusableCard extends StatelessWidget {
           Image(
             image: NetworkImage(images[i]),
             fit: BoxFit.fill,
-            height: height * 0.25,
+            height: height * 0.19,
             width: width * 0.45,
           ),
           Row(
@@ -368,7 +368,7 @@ class ReusableCard extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                    top: 4, right: 12, left: 10, bottom: 10),
+                    top: 4, right: 6, left: 10, bottom: 10),
                 child: Container(
                   height: height * 0.03,
                   width: width * 0.2,
