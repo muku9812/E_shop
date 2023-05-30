@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:practise/controller/productProvider.dart';
+import 'package:practise/model/productModel.dart';
 import 'package:practise/utilities/routes/routesName.dart';
 import 'package:practise/utilities/utilities.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:provider/provider.dart';
 
 import '../utilities/widgets/latestProductWidget.dart';
 import '../utilities/widgets/summerCollectionCard.dart';
@@ -190,8 +193,32 @@ class _HomeViewState extends State<HomeView> {
                 ],
               ),
             ),
-            LatestProduct(
-                name: name, height: height, images: images, width: width),
+            StreamBuilder<List<ProductModel>>(
+                stream: ProductProvider.getLatestProducts(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('Something went wrong'),
+                    );
+                  } else if (snapshot.hasData) {
+                    final latestProducts = snapshot.data!;
+                    List<String> names = [];
+                    List<String> images = [];
+                    for (int i = 0; i < latestProducts.length; i++) {
+                      names.add(latestProducts[i].title);
+                      images.add(latestProducts[i].image);
+                    }
+                    return LatestProduct(
+                        name: names,
+                        height: height,
+                        images: images,
+                        width: width);
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                }),
             Padding(
               padding: EdgeInsets.only(
                   left: width * 0.02, right: width * 0.02, top: height * 0.018),

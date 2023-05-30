@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:practise/model/productModel.dart';
+import 'package:provider/provider.dart';
 
 class LatestProduct extends StatelessWidget {
   const LatestProduct({
@@ -16,6 +18,7 @@ class LatestProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final latestProductList = Provider.of<List<ProductModel>>(context);
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
@@ -24,7 +27,7 @@ class LatestProduct extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  for (int i = 0; i < 6; i++)
+                  for (int i = 0; i < latestProductList.length; i++)
                     Padding(
                       padding:
                           const EdgeInsets.only(top: 10, bottom: 10, left: 10),
