@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:practise/model/productModel.dart';
+import 'package:provider/provider.dart';
 
 class ProductProvider with ChangeNotifier {
   bool _loading = false;
@@ -13,6 +14,8 @@ class ProductProvider with ChangeNotifier {
     _loading = value;
     notifyListeners();
   }
+
+  List<ProductModel> latestProductList = [];
 
   final fireStore = FirebaseFirestore.instance.collection('products');
   firebase_storage.FirebaseStorage storage =
@@ -43,4 +46,16 @@ class ProductProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  static Stream<List<ProductModel>> getLatestProducts() =>
+      FirebaseFirestore.instance
+          .collection('products')
+          .orderBy(
+            FieldPath.documentId,
+          )
+          .limit(10)
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => ProductModel.fromJson(doc.data()))
+              .toList());
 }

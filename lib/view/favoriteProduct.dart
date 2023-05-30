@@ -1,4 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:practise/controller/favoriteProductProvider.dart';
+import 'package:provider/provider.dart';
+
+import '../model/favouriteModel.dart';
 
 class FavoriteProduct extends StatefulWidget {
   const FavoriteProduct({super.key});
@@ -8,10 +14,28 @@ class FavoriteProduct extends StatefulWidget {
 }
 
 class _FavoriteProductState extends State<FavoriteProduct> {
+  late FavoriteProductProvider favoriteProductProvider;
+  List<FavouriteModel> favourtes = [];
+  StreamSubscription? modelSub;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      modelSub =
+          favoriteProductProvider.fetchFavourite((List<FavouriteModel> forms) {
+        favourtes = forms;
+        setState(() {});
+      });
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    favoriteProductProvider =
+        Provider.of<FavoriteProductProvider>(context, listen: false);
+
     return Scaffold(
         body: SafeArea(
       child: CustomScrollView(
@@ -37,11 +61,16 @@ class _FavoriteProductState extends State<FavoriteProduct> {
                       height: 100,
                       width: 70,
                       decoration: BoxDecoration(
-                          color: Colors.red,
+                          image: DecorationImage(
+                              image: NetworkImage(favourtes[index].imageUrl)),
                           borderRadius: BorderRadius.circular(10)),
                     ),
-                    title: Text('Item $index'),
-                    subtitle: Text('sub-title'),
+                    title: Text(favourtes[index].title),
+                    subtitle: Text(
+                      favourtes[index].description,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
                     trailing: PopupMenuButton(
                         icon: Icon(Icons.more_vert),
                         itemBuilder: (context) => [
@@ -56,7 +85,7 @@ class _FavoriteProductState extends State<FavoriteProduct> {
                                   ))
                             ])),
               );
-            }, childCount: 20)),
+            }, childCount: favourtes.length)),
           )
         ],
       ),

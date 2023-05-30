@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:practise/controller/favoriteProductProvider.dart';
+import 'package:practise/model/productModel.dart';
+import 'package:practise/utilities/utilities.dart';
+import 'package:provider/provider.dart';
 
 class LatestProduct extends StatelessWidget {
   const LatestProduct({
@@ -16,6 +20,7 @@ class LatestProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final latestProductList = Provider.of<List<ProductModel>>(context);
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
@@ -24,7 +29,7 @@ class LatestProduct extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  for (int i = 0; i < 6; i++)
+                  for (int i = latestProductList.length - 1; i >= 0; i--)
                     Padding(
                       padding:
                           const EdgeInsets.only(top: 10, bottom: 10, left: 10),
@@ -45,10 +50,33 @@ class LatestProduct extends StatelessWidget {
                                           style: const TextStyle(
                                               fontWeight: FontWeight.bold),
                                         ),
-                                        const Icon(
-                                          Icons.favorite_outline,
-                                          color: Colors.black,
-                                          size: 30,
+                                        Consumer<FavoriteProductProvider>(
+                                          builder: (context,
+                                              favoriteProductProvider, child) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                favoriteProductProvider
+                                                    .addFavourite(
+                                                        latestProductList[i].id,
+                                                        latestProductList[i]
+                                                            .title,
+                                                        latestProductList[i]
+                                                            .description,
+                                                        latestProductList[i]
+                                                            .image)
+                                                    .then((value) {
+                                                  Utils.toastMessage(
+                                                      '${latestProductList[i].title} added to favourite');
+                                                  Navigator.pop(context);
+                                                });
+                                              },
+                                              child: const Icon(
+                                                Icons.favorite_outline,
+                                                color: Colors.black,
+                                                size: 30,
+                                              ),
+                                            );
+                                          },
                                         )
                                       ],
                                     ),
@@ -77,11 +105,12 @@ class LatestProduct extends StatelessWidget {
                                                           .bodyMedium!
                                                           .copyWith(
                                                               fontSize: 16),
-                                                      children: const [
+                                                      children: [
                                                     TextSpan(
                                                         text:
-                                                            'In literary theory, a text is any object that can be "read", whether this object is a work of literature, a street sign, an arrangement of buildings on a city block, or styles of clothing.',
-                                                        style: TextStyle(
+                                                            latestProductList[i]
+                                                                .description,
+                                                        style: const TextStyle(
                                                           fontSize: 12,
                                                           overflow: TextOverflow
                                                               .ellipsis,

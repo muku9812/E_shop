@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:practise/controller/productProvider.dart';
+import 'package:practise/model/productModel.dart';
 import 'package:practise/utilities/routes/routesName.dart';
 import 'package:practise/utilities/utilities.dart';
 import 'package:badges/badges.dart' as badges;
@@ -18,7 +20,7 @@ class _HomeViewState extends State<HomeView> {
   List<String> images = [
     'https://filson-canto.imgix.net/sfi96vqojp2kf0cc843vdqhh0s/473jyYlXduHPdRoGSzAvpZdHeLQ/original?h=800&w=800&bg=0FFF&q=80&auto=format,compress&fit=fillmax',
     'https://www.backcountry.com/images/items/large/FSN/FSN0058/BK.jpg',
-    'https://www.beaubags.com/media/catalog/product/cache/3/image/0dc2d03fe217f8c83829496872af24a0/f/i/filson-tin-cloth-short-lined-cruiser-black-front.jpg',
+    'https://www.backcountry.com/images/items/large/FSN/FSN0058/BK.jpg',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi33kxa6WQ3g94bxPrIs_oCRWQ-fCpdPejIkRFc-iryQ8JzHkhPoW-__gOGkMwcfdVALc&usqp=CAU',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_bx6K-948sY3zl0Wa8BupQw5u8huj4ZTz082MGaNKXQVDwEqeH-BjpFJCAJmlzox3xzo&usqp=CAU',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEktpWHqEk1HaxWg5P1Xr00hCjF_TF7vi38df01n9GfY_fnosqFI4sDVl_7UymcyEjZYs&usqp=CAU'
@@ -68,7 +70,7 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Center(
               child: badges.Badge(
                 badgeContent: Text('3'),
@@ -76,7 +78,7 @@ class _HomeViewState extends State<HomeView> {
                   onTap: () {
                     Navigator.pushNamed(context, RoutesName.favorite);
                   },
-                  child: Icon(
+                  child: const Icon(
                     Icons.favorite_outline,
                     size: 30,
                   ),
@@ -195,12 +197,32 @@ class _HomeViewState extends State<HomeView> {
                 ],
               ),
             ),
-            LatestProduct(
-              name: name,
-              height: height,
-              images: images,
-              width: width,
-            ),
+            StreamBuilder<List<ProductModel>>(
+                stream: ProductProvider.getLatestProducts(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('Something went wrong'),
+                    );
+                  } else if (snapshot.hasData) {
+                    final latestProducts = snapshot.data!;
+                    List<String> names = [];
+                    List<String> images = [];
+                    for (int i = 0; i < latestProducts.length; i++) {
+                      names.add(latestProducts[i].title);
+                      images.add(latestProducts[i].image);
+                    }
+                    return LatestProduct(
+                        name: names,
+                        height: height,
+                        images: images,
+                        width: width);
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                }),
             Padding(
               padding: EdgeInsets.only(
                   left: width * 0.02, right: width * 0.02, top: height * 0.018),
