@@ -3,6 +3,7 @@ import 'package:practise/services/splashServices.dart';
 import 'package:practise/utilities/routes/routesName.dart';
 import 'package:practise/view/addProduct.dart';
 import 'package:practise/view/contactUs.dart';
+import 'package:practise/view/favoriteProduct.dart';
 import 'package:practise/view/homeView.dart';
 import 'package:practise/view/registerView.dart';
 import 'package:practise/view/splashScreen.dart';
@@ -12,6 +13,9 @@ import '../../view/loginView.dart';
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case RoutesName.favorite:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const FavoriteProduct());
       case RoutesName.splash:
         return MaterialPageRoute(
             builder: (BuildContext context) => const SplashScreen());

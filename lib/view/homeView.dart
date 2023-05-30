@@ -67,14 +67,19 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.all(8.0),
             child: Center(
               child: badges.Badge(
                 badgeContent: Text('3'),
-                child: Icon(
-                  Icons.favorite_outline,
-                  size: 30,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, RoutesName.favorite);
+                  },
+                  child: Icon(
+                    Icons.favorite_outline,
+                    size: 30,
+                  ),
                 ),
               ),
             ),
@@ -191,7 +196,11 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
             LatestProduct(
-                name: name, height: height, images: images, width: width),
+              name: name,
+              height: height,
+              images: images,
+              width: width,
+            ),
             Padding(
               padding: EdgeInsets.only(
                   left: width * 0.02, right: width * 0.02, top: height * 0.018),
