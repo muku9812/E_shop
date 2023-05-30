@@ -16,7 +16,6 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
-  late ProductProvider productProvider;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
@@ -36,7 +35,6 @@ class _AddProductState extends State<AddProduct> {
 
   @override
   Widget build(BuildContext context) {
-    productProvider = Provider.of<ProductProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 59, 173, 62),
@@ -88,48 +86,55 @@ class _AddProductState extends State<AddProduct> {
                 child: const Text('Select Image'),
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: GestureDetector(
-                onTap: () {
-                  if (_titleController.text.isEmpty) {
-                    Utils.flushBarErrorMessage('Pleaase enter title.', context);
-                  } else if (_descriptionController.text.isEmpty) {
-                    Utils.flushBarErrorMessage(
-                        'Please enter description.', context);
-                  } else if (_image!.path.isEmpty) {
-                    Utils.flushBarErrorMessage('Please select image.', context);
-                  } else {
-                    productProvider
-                        .addProduct(
-                      _titleController.text,
-                      _descriptionController.text,
-                      _image!,
-                    )
-                        .then((value) {
-                      Utils.toastMessage(
-                          '${_titleController.text} added successfully');
-                      Navigator.pushReplacementNamed(context, RoutesName.home);
-                    }).onError((error, stackTrace) {
-                      Utils.flushBarErrorMessage(error.toString(), context);
-                    });
-                  }
-                },
-                child: Container(
-                  height: 50,
-                  width: 200,
-                  decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Center(
-                      child: productProvider.loading == false
-                          ? const Text(
-                              'Submit',
-                              style: TextStyle(fontSize: 20),
-                            )
-                          : const CircularProgressIndicator()),
-                ),
-              ),
+            Consumer<ProductProvider>(
+              builder: (context, productProvider, child) {
+                return Align(
+                  alignment: Alignment.bottomCenter,
+                  child: GestureDetector(
+                    onTap: () {
+                      if (_titleController.text.isEmpty) {
+                        Utils.flushBarErrorMessage(
+                            'Pleaase enter title.', context);
+                      } else if (_descriptionController.text.isEmpty) {
+                        Utils.flushBarErrorMessage(
+                            'Please enter description.', context);
+                      } else if (_image!.path.isEmpty) {
+                        Utils.flushBarErrorMessage(
+                            'Please select image.', context);
+                      } else {
+                        productProvider
+                            .addProduct(
+                          _titleController.text,
+                          _descriptionController.text,
+                          _image!,
+                        )
+                            .then((value) {
+                          Utils.toastMessage(
+                              '${_titleController.text} added successfully');
+                          Navigator.pushReplacementNamed(
+                              context, RoutesName.home);
+                        }).onError((error, stackTrace) {
+                          Utils.flushBarErrorMessage(error.toString(), context);
+                        });
+                      }
+                    },
+                    child: Container(
+                      height: 50,
+                      width: 200,
+                      decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                          child: productProvider.loading == false
+                              ? const Text(
+                                  'Submit',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              : const CircularProgressIndicator()),
+                    ),
+                  ),
+                );
+              },
             )
           ],
         ),
