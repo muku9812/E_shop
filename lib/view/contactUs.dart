@@ -19,7 +19,6 @@ class _ContactUsState extends State<ContactUs> {
   final FocusNode _nameNode = FocusNode();
   final FocusNode _emailNdode = FocusNode();
   final FocusNode _descriptionNode = FocusNode();
-  final bool _loading = false;
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:practise/controller/productProvider.dart';
+import 'package:practise/utilities/routes/routesName.dart';
 import 'package:practise/utilities/utilities.dart';
+import 'package:provider/provider.dart';
 
 class AddProduct extends StatefulWidget {
   const AddProduct({super.key});
@@ -13,6 +16,7 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
+  late ProductProvider productProvider;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
@@ -32,6 +36,7 @@ class _AddProductState extends State<AddProduct> {
 
   @override
   Widget build(BuildContext context) {
+    productProvider = Provider.of<ProductProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 59, 173, 62),
@@ -85,17 +90,34 @@ class _AddProductState extends State<AddProduct> {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 50,
-                width: 200,
-                decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(10)),
-                child: const Center(
-                    child: Text(
-                  'Submit',
-                  style: TextStyle(fontSize: 20),
-                )),
+              child: GestureDetector(
+                onTap: () {
+                  productProvider
+                      .addProduct(
+                    _titleController.text,
+                    _descriptionController.text,
+                    _image!,
+                  )
+                      .then((value) {
+                    Utils.toastMessage(
+                        _titleController.text + ' added successfully');
+                    Navigator.pushReplacementNamed(context, RoutesName.home);
+                  });
+                },
+                child: Container(
+                  height: 50,
+                  width: 200,
+                  decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Center(
+                      child: productProvider.loading == false
+                          ? const Text(
+                              'Submit',
+                              style: TextStyle(fontSize: 20),
+                            )
+                          : const CircularProgressIndicator()),
+                ),
               ),
             )
           ],
