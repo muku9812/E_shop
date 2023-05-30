@@ -66,15 +66,17 @@ class _AddProductState extends State<AddProduct> {
                         borderRadius: BorderRadius.circular(10))),
               ),
             ),
-            _image != null
-                ? SizedBox(
-                    height: 100,
-                    width: 100,
-                    child: Image.file(_image!.absolute),
-                  )
-                : const SizedBox(
-                    height: null,
-                  ),
+            Center(
+              child: _image != null
+                  ? SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: Image.file(_image!.absolute),
+                    )
+                  : const SizedBox(
+                      height: null,
+                    ),
+            ),
             Center(
               child: ElevatedButton(
                 onPressed: _pickImageFromGallery,

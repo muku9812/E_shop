@@ -15,6 +15,7 @@ class ContactUsProvider with ChangeNotifier {
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
   Future<void> addData(String name, String email, String feedback) async {
+    loading = true;
     String id = DateTime.now().microsecondsSinceEpoch.toString();
     ContactUsModel contactUsModel =
         ContactUsModel(id: id, name: name, feedback: feedback, email: email);

@@ -16,6 +16,10 @@ class _ContactUsState extends State<ContactUs> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final FocusNode _nameNode = FocusNode();
+  final FocusNode _emailNdode = FocusNode();
+  final FocusNode _descriptionNode = FocusNode();
+  final bool _loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +55,11 @@ class _ContactUsState extends State<ContactUs> {
                 padding: const EdgeInsets.only(
                     left: 10, right: 10, top: 10, bottom: 6),
                 child: TextFormField(
+                  focusNode: _nameNode,
                   controller: _nameController,
+                  onFieldSubmitted: (value) {
+                    Utils.fieldFocusChange(context, _nameNode, _emailNdode);
+                  },
                   decoration: InputDecoration(
                       labelText: 'Name',
                       prefixIcon: const Icon(Icons.person),
@@ -69,7 +77,12 @@ class _ContactUsState extends State<ContactUs> {
                 padding: const EdgeInsets.only(
                     left: 10, right: 10, top: 8, bottom: 6),
                 child: TextFormField(
+                  focusNode: _emailNdode,
                   controller: _emailController,
+                  onFieldSubmitted: (value) {
+                    Utils.fieldFocusChange(
+                        context, _emailNdode, _descriptionNode);
+                  },
                   decoration: InputDecoration(
                       labelText: 'Email',
                       prefixIcon: const Icon(Icons.email),
@@ -87,6 +100,7 @@ class _ContactUsState extends State<ContactUs> {
                 padding: const EdgeInsets.only(
                     left: 10, right: 10, top: 8, bottom: 16),
                 child: TextFormField(
+                  focusNode: _descriptionNode,
                   controller: _descriptionController,
                   maxLines: 6,
                   minLines: 3,
@@ -124,11 +138,13 @@ class _ContactUsState extends State<ContactUs> {
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.green,
                     ),
-                    child: const Center(
-                        child: Text(
-                      'Send',
-                      style: TextStyle(fontSize: 20),
-                    )),
+                    child: Center(
+                        child: contactUsProvider.loading == false
+                            ? const Text(
+                                'Send',
+                                style: TextStyle(fontSize: 20),
+                              )
+                            : const CircularProgressIndicator()),
                   ),
                 ),
               )
