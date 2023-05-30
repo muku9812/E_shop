@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:practise/model/productModel.dart';
@@ -16,6 +17,8 @@ class ProductProvider with ChangeNotifier {
   final fireStore = FirebaseFirestore.instance.collection('products');
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
+
   Future<void> addProduct(String title, String description, File image) async {
     loading = true;
     String? imageUrl;
@@ -27,7 +30,12 @@ class ProductProvider with ChangeNotifier {
           await productRef.putFile(image);
       imageUrl = await uploadTask.ref.getDownloadURL();
       ProductModel productModel = ProductModel(
-          id: id, title: title, description: description, image: imageUrl);
+        id: id,
+        title: title,
+        description: description,
+        image: imageUrl,
+        uid: auth.currentUser!.uid,
+      );
       await fireStore.doc(id).set(productModel.toJson()).then((value) {
         loading = false;
       });

@@ -4,6 +4,9 @@ import 'package:practise/utilities/routes/routesName.dart';
 import 'package:practise/utilities/utilities.dart';
 import 'package:badges/badges.dart' as badges;
 
+import '../utilities/widgets/latestProductWidget.dart';
+import '../utilities/widgets/summerCollectionCard.dart';
+
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -166,123 +169,29 @@ class _HomeViewState extends State<HomeView> {
                         fit: BoxFit.fill)),
               ),
             ),
-            SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 10),
-                  child: Row(
-                    children: [
-                      for (int i = 0; i < 6; i++)
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 10, bottom: 10, left: 10),
-                          child: InkWell(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                        title: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              name[i],
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            const Icon(
-                                              Icons.favorite_outline,
-                                              color: Colors.black,
-                                              size: 30,
-                                            )
-                                          ],
-                                        ),
-                                        content: SizedBox(
-                                          height: height * 0.4,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Card(
-                                                child: Image(
-                                                  image:
-                                                      NetworkImage(images[i]),
-                                                  fit: BoxFit.fill,
-                                                  height: height * 0.29,
-                                                  width: double.maxFinite,
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: ClipRect(
-                                                  child: RichText(
-                                                      text: TextSpan(
-                                                          text:
-                                                              'Description:- ',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodyMedium!
-                                                                  .copyWith(
-                                                                      fontSize:
-                                                                          16),
-                                                          children: const [
-                                                        TextSpan(
-                                                            text:
-                                                                'In literary theory, a text is any object that can be "read", whether this object is a work of literature, a street sign, an arrangement of buildings on a city block, or styles of clothing.',
-                                                            style: TextStyle(
-                                                              fontSize: 12,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            )),
-                                                      ])),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Cancel')),
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Add to Cart'))
-                                        ]);
-                                  });
-                            },
-                            child: Container(
-                              height: height * 0.15,
-                              width: width * 0.29,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                      image: NetworkImage(images[i]),
-                                      fit: BoxFit.fill)),
-                              child: Center(
-                                child: Text(
-                                  name[i],
-                                  style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.red),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
+            Padding(
+              padding: EdgeInsets.only(
+                  left: width * 0.02, right: width * 0.02, top: height * 0.018),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    'Latest Product',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                )),
+                  Text(
+                    'View more',
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.blue),
+                  ),
+                ],
+              ),
+            ),
+            LatestProduct(
+                name: name, height: height, images: images, width: width),
             Padding(
               padding: EdgeInsets.only(
                   left: width * 0.02, right: width * 0.02, top: height * 0.018),
@@ -329,77 +238,6 @@ class _HomeViewState extends State<HomeView> {
             )
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ReusableCard extends StatelessWidget {
-  const ReusableCard({
-    super.key,
-    required this.images,
-    required this.i,
-    required this.height,
-    required this.width,
-    required this.name,
-  });
-
-  final List<String> images;
-  final int i;
-  final double height;
-  final double width;
-  final List<String> name;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        children: [
-          Image(
-            image: NetworkImage(images[i]),
-            fit: BoxFit.fill,
-            height: height * 0.19,
-            width: width * 0.45,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 4, right: 6, left: 10, bottom: 10),
-                child: Container(
-                  height: height * 0.03,
-                  width: width * 0.2,
-                  decoration: BoxDecoration(
-                      color: Colors.amberAccent,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Center(
-                    child: Text(
-                      name[i],
-                      style: const TextStyle(
-                          fontSize: 17, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15),
-                child: SizedBox(
-                  height: height * 0.03,
-                  width: width * 0.15,
-                  child: InkWell(
-                      onTap: () {
-                        Set();
-                        Utils.toastMessage('${name[i]} added to cart');
-                      },
-                      child: const Icon(Icons.add_shopping_cart_sharp)),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
