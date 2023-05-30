@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:practise/model/productModel.dart';
+import 'package:practise/provider/cartProvider.dart';
 import 'package:practise/utilities/routes/routesName.dart';
 import 'package:practise/utilities/utilities.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:practise/view/cartView.dart';
+import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -76,17 +80,22 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
           ),
-          Padding(
-              padding: const EdgeInsets.only(right: 16, left: 8),
-              child: Center(
-                child: badges.Badge(
-                  badgeContent: Text(items.toString()),
-                  child: const Icon(
-                    Icons.shopping_cart_outlined,
-                    size: 30,
+          GestureDetector(
+            onTap: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartView()));
+            },
+            child: Padding(
+                padding: const EdgeInsets.only(right: 16, left: 8),
+                child: Center(
+                  child: badges.Badge(
+                    badgeContent: Text(items.toString()),
+                    child:  Icon(
+                      Icons.shopping_cart_outlined,
+                      size: 30,
+                    )
                   ),
-                ),
-              )),
+                )),
+          ),
         ],
       ),
       drawer: Drawer(
@@ -172,7 +181,7 @@ class _HomeViewState extends State<HomeView> {
                   padding: const EdgeInsets.only(left: 8, right: 10),
                   child: Row(
                     children: [
-                      for (int i = 0; i < 6; i++)
+                      for (int i = 0; i < Product.products.length; i++)
                         Padding(
                           padding: const EdgeInsets.only(
                               top: 10, bottom: 10, left: 10),
@@ -189,7 +198,7 @@ class _HomeViewState extends State<HomeView> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              name[i],
+                                              Product.products[i].productName,
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -209,7 +218,7 @@ class _HomeViewState extends State<HomeView> {
                                               Card(
                                                 child: Image(
                                                   image:
-                                                      NetworkImage(images[i]),
+                                                      NetworkImage(Product.products[i].productImageUrl),
                                                   fit: BoxFit.fill,
                                                   height: height * 0.29,
                                                   width: double.maxFinite,
@@ -266,11 +275,11 @@ class _HomeViewState extends State<HomeView> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   image: DecorationImage(
-                                      image: NetworkImage(images[i]),
+                                      image: NetworkImage(Product.products[i].productImageUrl),
                                       fit: BoxFit.fill)),
                               child: Center(
                                 child: Text(
-                                  name[i],
+                                  Product.products[i].productName,
                                   style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
@@ -317,13 +326,12 @@ class _HomeViewState extends State<HomeView> {
                   childAspectRatio: 0.8,
                 ),
                 children: <Widget>[
-                  for (int i = 0; i <= 5; i++)
+                  for (int i = 0; i < Product.products.length; i++)
                     ReusableCard(
-                        images: images,
-                        i: i,
+                      imageUrl: Product.products[i].productImageUrl,
                         height: height,
                         width: width,
-                        name: name),
+                        name: Product.products[i].productName),
                 ],
               ),
             )
@@ -337,18 +345,18 @@ class _HomeViewState extends State<HomeView> {
 class ReusableCard extends StatelessWidget {
   const ReusableCard({
     super.key,
-    required this.images,
-    required this.i,
+    required this.imageUrl,
+
     required this.height,
     required this.width,
     required this.name,
   });
 
-  final List<String> images;
-  final int i;
+  final String imageUrl;
+
   final double height;
   final double width;
-  final List<String> name;
+  final String name;
 
   @override
   Widget build(BuildContext context) {
@@ -357,7 +365,7 @@ class ReusableCard extends StatelessWidget {
       child: Column(
         children: [
           Image(
-            image: NetworkImage(images[i]),
+            image: NetworkImage(imageUrl),
             fit: BoxFit.fill,
             height: height * 0.19,
             width: width * 0.45,
@@ -377,7 +385,7 @@ class ReusableCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10)),
                   child: Center(
                     child: Text(
-                      name[i],
+                      name,
                       style: const TextStyle(
                           fontSize: 17, fontWeight: FontWeight.bold),
                     ),
@@ -392,7 +400,8 @@ class ReusableCard extends StatelessWidget {
                   child: InkWell(
                       onTap: () {
                         Set();
-                        Utils.toastMessage('${name[i]} added to cart');
+                        context.read<CartProvider>().addToProductList(Product(productDescription: "No Description", productImageUrl: imageUrl, productName: name));
+                        Utils.toastMessage('${name} added to cart');
                       },
                       child: const Icon(Icons.add_shopping_cart_sharp)),
                 ),

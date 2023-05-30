@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:practise/controller/contactUsProvider.dart';
 import 'package:practise/utilities/routes/routesName.dart';
 import 'package:practise/utilities/utilities.dart';
 import 'package:provider/provider.dart';
+
+import '../provider/contactUsProvider.dart';
 
 class ContactUs extends StatefulWidget {
   const ContactUs({super.key});

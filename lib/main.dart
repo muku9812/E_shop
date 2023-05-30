@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:practise/controller/contactUsProvider.dart';
+import 'package:practise/provider/cartProvider.dart';
+import 'package:practise/provider/contactUsProvider.dart';
 import 'package:practise/utilities/routes/routes.dart';
 import 'package:practise/utilities/routes/routesName.dart';
 import 'package:provider/provider.dart';
-
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => CartProvider()),
         ChangeNotifierProvider(create: (context) => ContactUsProvider())
       ],
       child: MaterialApp(
