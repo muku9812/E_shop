@@ -226,47 +226,49 @@ class _HomeViewState extends State<HomeView> {
             ),
             SizedBox(
               height: height * 0.82,
-              child: GridView(
-                physics: const NeverScrollableScrollPhysics(),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 8.0,
-                  crossAxisSpacing: 8.0,
-                  childAspectRatio: 0.8,
-                ),
-                children: <Widget>[
-                  StreamBuilder<List<ProductModel>>(
-                      stream: ProductProvider.getSummerProducts(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return const Center(
-                            child: Text('Something went wrong'),
-                          );
-                        } else if (snapshot.hasData) {
-                          final summerProductList = snapshot.data!;
-                          List<String> names = [];
-                          List<String> images = [];
-                          for (int i = 0; i < summerProductList.length; i++) {
-                            names.add(summerProductList[i].title);
-                            images.add(summerProductList[i].image);
-                          }
-                          for (int i = 0; i < summerProductList.length;) {
-                            return ReusableCard(
-                                images: images,
-                                i: i,
-                                height: height,
-                                width: width,
-                                name: names);
-                          }
-                        }
-                        return Center(
-                          child: CircularProgressIndicator(),
+              child: StreamBuilder<List<ProductModel>>(
+                  stream: ProductProvider.getSummerProducts(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return const Center(
+                        child: Text('Something went wrong'),
+                      );
+                    } else if (snapshot.hasData) {
+                      final summerProductList = snapshot.data!;
+                      List<String> names = [];
+                      List<String> images = [];
+                      for (int i = 0; i < summerProductList.length; i++) {
+                        names.add(summerProductList[i].title);
+                        images.add(summerProductList[i].image);
+                      }
+                      for (int i = 0; i < summerProductList.length; i++) {
+                        return GridView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 8.0,
+                            crossAxisSpacing: 8.0,
+                            childAspectRatio: 0.8,
+                          ),
+                          children: <Widget>[
+                            for (int i = 0; i < summerProductList.length; i++)
+                              ReusableCard(
+                                  images: images,
+                                  i: i,
+                                  height: height,
+                                  width: width,
+                                  name: names),
+                          ],
                         );
-                      }),
-                ],
-              ),
+                      }
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }),
             )
           ],
         ),
