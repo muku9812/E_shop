@@ -92,17 +92,28 @@ class _AddProductState extends State<AddProduct> {
               alignment: Alignment.bottomCenter,
               child: GestureDetector(
                 onTap: () {
-                  productProvider
-                      .addProduct(
-                    _titleController.text,
-                    _descriptionController.text,
-                    _image!,
-                  )
-                      .then((value) {
-                    Utils.toastMessage(
-                        _titleController.text + ' added successfully');
-                    Navigator.pushReplacementNamed(context, RoutesName.home);
-                  });
+                  if (_titleController.text.isEmpty) {
+                    Utils.flushBarErrorMessage('Pleaase enter title.', context);
+                  } else if (_descriptionController.text.isEmpty) {
+                    Utils.flushBarErrorMessage(
+                        'Please enter description.', context);
+                  } else if (_image!.path.isEmpty) {
+                    Utils.flushBarErrorMessage('Please select image.', context);
+                  } else {
+                    productProvider
+                        .addProduct(
+                      _titleController.text,
+                      _descriptionController.text,
+                      _image!,
+                    )
+                        .then((value) {
+                      Utils.toastMessage(
+                          '${_titleController.text} added successfully');
+                      Navigator.pushReplacementNamed(context, RoutesName.home);
+                    }).onError((error, stackTrace) {
+                      Utils.flushBarErrorMessage(error.toString(), context);
+                    });
+                  }
                 },
                 child: Container(
                   height: 50,
