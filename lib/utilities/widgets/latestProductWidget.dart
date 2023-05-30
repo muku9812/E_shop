@@ -53,7 +53,7 @@ class LatestProduct extends StatelessWidget {
                                       ],
                                     ),
                                     content: SizedBox(
-                                      height: height * 0.4,
+                                      height: height * 0.43,
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
